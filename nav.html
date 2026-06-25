@@ -1,0 +1,166 @@
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-fastflow-nav>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <a class="brand" href="index.html" aria-label="FastFlow AI home">
+      <span class="brand-mark" aria-hidden="true"><img src="assets/fastflow-logo.jpeg" alt=""></span>
+      <span>FastFlow <span class="brand-ai">AI</span></span>
+    </a>
+
+    <ul class="nav-menu" id="primary-navigation">
+      <li><a class="nav-link" href="index.html">Home</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+      <li class="nav-item has-dropdown">
+        <button class="dropdown-toggle" type="button" aria-expanded="false" aria-controls="services-menu">
+          <span>Services</span>
+          <svg class="dropdown-icon" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M5 7.5 10 12l5-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" />
+          </svg>
+        </button>
+        <ul class="dropdown-menu" id="services-menu">
+          <li>
+            <a class="dropdown-link" href="services-ai.html">
+              <span class="dropdown-label">AI Systems</span>
+              <span class="dropdown-copy">Voice, SMS, chat and email agents.</span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-link" href="services-marketing.html">
+              <span class="dropdown-label">Marketing</span>
+              <span class="dropdown-copy">Paid campaigns built for buyers.</span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-link" href="services-combined.html">
+              <span class="dropdown-label">Combined</span>
+              <span class="dropdown-copy">Ads plus AI as one revenue system.</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li><a class="nav-link" href="work.html">Our Work</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a class="nav-cta" href="https://calendar.app.google/NWBaehtPP2ieLKBr7" target="_blank" rel="noopener">Book Demo</a>
+      <button class="hamburger" type="button" aria-label="Open navigation menu" aria-controls="primary-navigation" aria-expanded="false">
+        <span class="hamburger-lines" aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="nav-overlay" data-nav-overlay hidden></div>
+
+<script>
+  (() => {
+    const navRoot = document.querySelector("[data-fastflow-nav]");
+    if (!navRoot || navRoot.dataset.ready === "true") return;
+    navRoot.dataset.ready = "true";
+
+    const body = document.body;
+    const menu = navRoot.querySelector("#primary-navigation");
+    const toggle = navRoot.querySelector(".hamburger");
+    const overlay = document.querySelector("[data-nav-overlay]");
+    const dropdownItem = navRoot.querySelector(".has-dropdown");
+    const dropdownToggle = navRoot.querySelector(".dropdown-toggle");
+    const navLinks = navRoot.querySelectorAll("a[href]");
+    const desktopQuery = window.matchMedia("(min-width: 901px)");
+
+    const setCurrentLink = () => {
+      const current = window.location.pathname.split("/").pop() || "index.html";
+      let servicePageActive = false;
+
+      navLinks.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (href === current) {
+          link.setAttribute("aria-current", "page");
+          if (link.classList.contains("dropdown-link")) servicePageActive = true;
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+
+      if (servicePageActive) {
+        dropdownToggle.dataset.current = "true";
+      } else {
+        delete dropdownToggle.dataset.current;
+      }
+    };
+
+    const closeDropdown = () => {
+      dropdownItem.classList.remove("is-open");
+      dropdownToggle.setAttribute("aria-expanded", "false");
+    };
+
+    const openDropdown = () => {
+      dropdownItem.classList.add("is-open");
+      dropdownToggle.setAttribute("aria-expanded", "true");
+    };
+
+    const closeMenu = () => {
+      menu.classList.remove("is-open");
+      body.classList.remove("nav-open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open navigation menu");
+      if (overlay) {
+        overlay.classList.remove("is-visible");
+        overlay.hidden = true;
+      }
+      if (!desktopQuery.matches) closeDropdown();
+    };
+
+    const openMenu = () => {
+      menu.classList.add("is-open");
+      body.classList.add("nav-open");
+      toggle.setAttribute("aria-expanded", "true");
+      toggle.setAttribute("aria-label", "Close navigation menu");
+      if (overlay) {
+        overlay.hidden = false;
+        requestAnimationFrame(() => overlay.classList.add("is-visible"));
+      }
+    };
+
+    const toggleMenu = () => {
+      menu.classList.contains("is-open") ? closeMenu() : openMenu();
+    };
+
+    setCurrentLink();
+
+    toggle.addEventListener("click", toggleMenu);
+    overlay?.addEventListener("click", closeMenu);
+
+    dropdownToggle.addEventListener("click", () => {
+      if (desktopQuery.matches) {
+        dropdownItem.classList.contains("is-open") ? closeDropdown() : openDropdown();
+        return;
+      }
+      dropdownItem.classList.contains("is-open") ? closeDropdown() : openDropdown();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!navRoot.contains(event.target) && desktopQuery.matches) {
+        closeDropdown();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      closeMenu();
+      closeDropdown();
+      toggle.focus();
+    });
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (!desktopQuery.matches) closeMenu();
+      });
+    });
+
+    desktopQuery.addEventListener("change", (event) => {
+      closeMenu();
+      if (event.matches) closeDropdown();
+    });
+  })();
+</script>
